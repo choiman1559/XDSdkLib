@@ -1,0 +1,3 @@
+include ':XDSdkLib'
+include ':app'
+rootProject.name = "XDSDKLoginTest"

@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">XDSDKLoginTest</string>
+    <string name="gcm_defaultSenderId">17685588992</string>
+    <string name="google_api_key">AIzaSyCuCPdvoFJWXRkckmYJ7IatHhFTwYjJie4</string>
+    <string name="google_app_id">1:17685588992:android:b7d610e365981e05</string>
+    <string name="google_crash_reporting_api_key">AIzaSyCuCPdvoFJWXRkckmYJ7IatHhFTwYjJie4</string>
+    <string name="google_login_way">old</string>
+    <string name="google_server_client_id">17685588992-jjf727icdguc8hne9nf953nh6edjnt6t.apps.googleusercontent.com</string>
+    <string name="google_storage_bucket">snqx-d9cde.appspot.com</string>
+</resources>
