@@ -26,6 +26,19 @@ dependencies {
 }
 ```
 
+- add `android:usesCleartextTraffic` option in manifist if you haven't added it.
+
+```
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example">
+    <application	
+	android:usesCleartextTraffic="true" <!-- add this line -->
+         . . . >
+    </application>
+</manifest>
+```
+
 - Re-sync project with gradle files.
 
 ## Usage
@@ -36,6 +49,14 @@ in package `lib.xdsdk.passport` :
  - `GoogleHelper` :  Provides additional API for Google login
 
  #### Methods
+ 
+ in class `CometPassport` :
+ ```
+ public static CometPassport model()
+ ```
+ Provides an instance of Cometpassport.
+ 
+-----------------------------------------------
  
  in class `CometPassport` :
  
@@ -70,3 +91,76 @@ To use this method, you need to call the `GoogleHelper#public static void onActi
  
  Log out of all login sessions.
 You may need to clear the app's cache in order to log out completely.
+
+--------------------------------------------------
+
+ in class `GoogleHelper` : 
+ ```
+ public static void onActivityResult(Activity activity, int i, int i2, Intent intent)
+ ```
+ It is a method that should be called from `Activity#onActivityResult(int, int, Intent)` when using  `public void signWithGoogle(final Activity activity)` method.
+
+-------------------------------------------------
+
+ in class `CometPassport` : 
+ ```
+ public void setOnGuestLoginCompleteListener(OnGuestLoginCompleteListener listener)
+ ```
+ 
+This is a listener registration method that is called when logging in as a guest is complete.
+
+-------------------------------------------------
+
+ in class `CometPassport` : 
+ ```
+ public void setOnXdgLoginCompleteListener(OnXdgLoginCompleteListener listener)
+ ```
+ 
+This is a listener registration method that is called when logging in as a Xdg global account is complete.
+
+-------------------------------------------------
+
+ in class `CometPassport` : 
+ ```
+ public void setOnGoogleLoginCompleteListener(OnGoogleLoginCompleteListener listener)
+ ```
+ 
+This is a listener registration method that is called when logging in as a google account is complete.
+
+#### Interfaces
+
+ in class `CometPassport` : 
+ ```
+  public interface OnGuestLoginCompleteListener {
+        void onFinish(JSONObject result);
+    }
+ ```
+
+This is the interface used for `public void setOnGuestLoginCompleteListener(OnGuestLoginCompleteListener listener)`.
+ - `JSONObject result`: Provides the login result query value.
+
+-------------------------------------------------
+
+ in class `CometPassport` : 
+ ```
+  public interface OnGoogleLoginCompleteListener {
+        void onFinish(JSONObject result);
+    }
+ ```
+
+This is the interface used for `public void setOnGoogleLoginCompleteListener(OnGoogleLoginCompleteListener listener)`.
+ - `JSONObject result`: Provides the login result query value.
+
+-------------------------------------------------
+
+ in class `CometPassport` : 
+ ```
+  public interface OnXdgLoginCompleteListener {
+        void onFinish(JSONObject result);
+    }
+ ```
+
+This is the interface used for `public void setOnXdgLoginCompleteListener(OnXdgLoginCompleteListener listener)`.
+ - `JSONObject result`: Provides the login result query value.
+
+-------------------------------------------------
