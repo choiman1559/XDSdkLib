@@ -1,4 +1,6 @@
 # XDSdkLib
+[![License](https://img.shields.io/badge/License-GPL%203.0-yellowgreen.svg)](https://opensource.org/licenses/GPL-3.0)
+
 minimal implementation version of xdsdk .
 This library only provides login api.
 
@@ -26,3 +28,25 @@ dependencies {
 - Re-sync project with gradle files.
 
 ## Usage
+
+#### Classes
+in package `lib.xdsdk.passport` :
+ - `CometPassport` :  Login and login listener implementation classes
+ - `GoogleHelper` :  Provides additional API for Google login
+
+ #### Methods
+ 
+ in class `CometPassport` :
+ 
+ ```
+ public void signWithGuest(final Activity activity) 
+ ```
+ Log in with a guest account. At this time, the logged-in account is a one-time account that cannot be reused, and the account created when the data of the app is deleted is also deleted.
+ 
+ -------------------------------------------------
+ in class `CometPassport` :
+
+ ```
+ public void signWithWegames(final Activity activity, final String ID, String Password)
+ ```
+ Log in with your XD global account.
