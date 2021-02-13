@@ -1,4 +1,5 @@
 # XDSdkLib
+
 [![License](https://img.shields.io/badge/License-GPL%203.0-yellowgreen.svg)](https://opensource.org/licenses/GPL-3.0)
 
 minimal implementation version of xdsdk .
@@ -50,3 +51,22 @@ in package `lib.xdsdk.passport` :
  public void signWithWegames(final Activity activity, final String ID, String Password)
  ```
  Log in with your XD global account.
+ 
+ -------------------------------------------------
+ 
+ in class `CometPassport` : 
+```
+ public void signWithGoogle(final Activity activity)
+```
+Log in using your Google account. 
+To use this method, you need to call the `GoogleHelper#public static void onActivityResult(Activity activity, int i, int i2, Intent intent)` method in `Activity#onActivityResult(int, int, Intent)`.
+
+--------------------------------------------------
+
+ in class `CometPassport` : 
+ ```
+ public void logout(Activity activity)
+ ```
+ 
+ Log out of all login sessions.
+You may need to clear the app's cache in order to log out completely.
