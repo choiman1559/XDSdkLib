@@ -206,7 +206,6 @@ public class CometPassport {
                     }
 
                     @Override
-                    // com.txwy.passport.xdsdk.httpUrlConnectionUtil.callback.HttpCallbackModelListener
                     public void onError(Exception exc) {
                         Log.d("CometPassport", "signWithWegames Exception :" + exc.toString());
                     }
@@ -217,8 +216,9 @@ public class CometPassport {
         }).start();
     }
 
-    public void logout(Context context) {
-        context.getSharedPreferences(SPTools.FILE_NAME, Context.MODE_PRIVATE).edit().clear().apply();
+    public void logout(Activity activity) {
+        GoogleHelper.logout(activity);
+        activity.getSharedPreferences(SPTools.FILE_NAME, Context.MODE_PRIVATE).edit().clear().apply();
     }
 
     public static String urlencode(String str) {
