@@ -10,7 +10,7 @@ You can find sample app on [here](https://github.com/choiman1559/XDSdkLib/tree/m
 # How-to-use
 
 ## 1. download source and edit gradle
--  Download or clone [the source code](https://github.com/choiman1559/XDSdkLib:// "the source code") and copy the `XDSdkLib`folder to your project root directory.
+-  Download or clone [the source code](https://github.com/choiman1559/XDSdkLib) and copy the `XDSdkLib`folder to your project root directory.
 
 - edit `settings.gradle` file
 
