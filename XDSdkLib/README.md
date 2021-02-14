@@ -112,6 +112,7 @@ dependencies {
 in package `lib.xdsdk.passport` :
  - `CometPassport` :  Login and login listener implementation classes
  - `GoogleHelper` :  Provides additional API for Google login
+ - `FacebookHelper` : Provides additional API for Facebook login
 
  #### Methods
  
@@ -145,7 +146,7 @@ in package `lib.xdsdk.passport` :
  public void signWithGoogle(final Activity activity)
 ```
 Log in using your Google account. 
-To use this method, you need to call the `GoogleHelper#public static void onActivityResult(Activity activity, int i, int i2, Intent intent)` method in `Activity#onActivityResult(int, int, Intent)`.
+To use this method, you need to call the `CometPassport.registerOnActivityResult` method in `Activity#onActivityResult`.
 
 --------------------------------------------------
 
@@ -162,9 +163,10 @@ in class `CometPassport` :
  in class `CometPassport` :
 
  ```
- public void signWithFacebook(final Activity activity, final String FacebookUid)
+ public void signWithFacebook(Activity activity)
  ```
  Log in with your Facebook account.
+ To use this method, you need to call the `CometPassport.registerOnActivityResult` method in `Activity#onActivityResult`.
  
  -------------------------------------------------
  
@@ -176,6 +178,15 @@ in class `CometPassport` :
  Log in with your WeGame account.
  
  -------------------------------------------------
+ 
+ in class `CometPassport` :
+ ```
+  public void registerOnActivityResult(Activity activity, int requestCode, int resultCode, Intent data) 
+ ```
+ 
+ call this in the `onActivityResult` method of the activity you want to call the login method to pass the login result to the `GoogleHelper` and `FacebookHelper` class. If you do not call this method, you will not be able to log in when you log in through Google or Facebook.
+  
+  ----------------------------------------------
 
  in class `CometPassport` : 
  ```
@@ -186,14 +197,6 @@ in class `CometPassport` :
 You may need to clear the app's cache in order to log out completely.
 
  -------------------------------------------------
-
- in class `GoogleHelper` : 
- ```
- public static void onActivityResult(Activity activity, int i, int i2, Intent intent)
- ```
- It is a method that should be called from `Activity#onActivityResult(int, int, Intent)` when using  `public void signWithGoogle(final Activity activity)` method.
-
--------------------------------------------------
 
  in class `CometPassport` : 
  ```
