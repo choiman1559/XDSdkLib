@@ -28,7 +28,9 @@ public class CometPassport {
     public interface OnGuestLoginCompleteListener {
         void onFinish(JSONObject result);
     }
+
     private static OnGuestLoginCompleteListener GuestLoginCompleteListener;
+
     public void setOnGuestLoginCompleteListener(OnGuestLoginCompleteListener listener) {
         GuestLoginCompleteListener = listener;
     }
@@ -36,7 +38,9 @@ public class CometPassport {
     public interface OnGoogleLoginCompleteListener {
         void onFinish(JSONObject result);
     }
+
     private static OnGoogleLoginCompleteListener GoogleLoginCompleteListener;
+
     public void setOnGoogleLoginCompleteListener(OnGoogleLoginCompleteListener listener) {
         GoogleLoginCompleteListener = listener;
     }
@@ -44,12 +48,15 @@ public class CometPassport {
     public interface OnXdgLoginCompleteListener {
         void onFinish(JSONObject result);
     }
+
     private static OnXdgLoginCompleteListener XdgLoginCompleteListener;
+
     public void setOnXdgLoginCompleteListener(OnXdgLoginCompleteListener listener) {
         XdgLoginCompleteListener = listener;
     }
 
     private static CometPassport m_obj;
+
     public static CometPassport model() {
         if (m_obj != null) {
             return m_obj;
@@ -67,7 +74,7 @@ public class CometPassport {
         int r4 = SPTools.getInt(activity, Constants.UID, 0);
         HashMap r9 = new HashMap();
         r9.put("appid", urlencode(r0));
-        r9.put("ver",8);
+        r9.put("ver", 8);
         r9.put("time", r6);
         r9.put("fuid", urlencode(r1));
         r9.put("device_id", urlencode(r2));
@@ -97,6 +104,49 @@ public class CometPassport {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void signInWithXdg(final Activity activity, final String str, String str2) {
+        new Thread(() -> {
+            try {
+                String r13 = "158714";
+                String r14 = "android_kr_snqx";
+                String r0 = Settings.Secure.getString(activity.getContentResolver(), "android_id");
+                final long r3 = System.currentTimeMillis() / 1000;
+                HashMap r6 = new HashMap();
+                r6.put("appid", urlencode(r13));
+                r6.put("ver", 8);
+                r6.put("time", r3);
+                String s = str;
+                if (str.indexOf("@") == 0) {
+                    s = str.substring(1);
+                }
+                r6.put("username", urlencode(s));
+                r6.put("password", urlencode(str2));
+                r6.put("fuid", urlencode(r14));
+                r6.put("device_id", urlencode(r0));
+                r6.put("binding", 1);
+                r6.put("autologin", urlencode(""));
+                r6.put("device_token", urlencode(""));
+                HttpUrlConnectioHelper.doPostQueue(activity, String.format(Locale.CHINESE, "https://%s/%s/signin", "p.17996api.com", "api2"), new HttpCallbackModelListener<Object>() {
+                    @Override
+                    public void onFinish(Object obj) {
+                        if ((obj instanceof JSONObject)) {
+                            XdgLoginCompleteListener.onFinish((JSONObject) obj);
+                            //CometPassport.m_obj.processSignin(activity, (JSONObject) obj, r3, "txwy", "");
+                        }
+                    }
+
+                    @Override
+                    public void onError(Exception exc) {
+                        exc.printStackTrace();
+                        Toast.makeText(activity, "Login post Error", Toast.LENGTH_SHORT).show();
+                    }
+                }, r6, "");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 
     public void signWithGoogle(final Activity activity) {

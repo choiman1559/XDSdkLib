@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
                     if(ID.equals("")) Id.setError("Input ID");
                     if(PW.equals("")) Pw.setError("Input PW");
                 } else {
-                    passport.signWithWegames(this,ID,PW);
+                    passport.signInWithXdg(this,ID,PW);
                     loginDialog.dismiss();
                 }
             });
