@@ -43,6 +43,69 @@ dependencies {
 
 - Re-sync project with gradle files.
 
+## 2. To use Google login or Facebook login
+ - Add ```INTERNET``` permission in manifist if you haven't added it.
+
+```
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example">
+
+    <uses-permission android:name="android.permission.INTERNET" />  <!-- add this line -->
+
+    <application
+           ...
+           
+    </application>
+</manifest>
+```
+- (Facebook only) Add the following `meta-data` element, activity for Facebook, activity for Chrome custom tab, and intent filter within the `application` element.
+```
+ <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
+        <activity
+            android:name="com.facebook.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:label="@string/app_name" />
+        <activity
+            android:name="com.facebook.CustomTabActivity"
+            android:exported="true">
+            <intent-filter><action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="@string/fb_login_protocol_scheme" />
+            </intent-filter>
+        </activity>
+```
+
+- edit your app's `strings.xml`
+
+```
+    <!-- strings for google login -->
+    <string name="gcm_defaultSenderId">17685588992</string>
+    <string name="google_api_key">AIzaSyCuCPdvoFJWXRkckmYJ7IatHhFTwYjJie4</string>
+    <string name="google_app_id">1:17685588992:android:b7d610e365981e05</string>
+    <string name="google_crash_reporting_api_key">AIzaSyCuCPdvoFJWXRkckmYJ7IatHhFTwYjJie4</string>
+    <string name="google_login_way">old</string>
+    <string name="google_server_client_id">17685588992-jjf727icdguc8hne9nf953nh6edjnt6t.apps.googleusercontent.com</string>
+    <string name="google_storage_bucket">snqx-d9cde.appspot.com</string>
+    
+    <!-- strings for facebook login -->
+    <string name="facebook_app_id">1889637967990346</string>
+    <string name="fb_login_protocol_scheme">fb1889637967990346</string>
+```
+- Finally, call `CometPassport.registerOnActivityResult` in the `onActivityResult` method of the activity you want to call the login method to pass the login result to the `GoogleHelper` and `FacebookHelper` class.
+```
+ @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        CometPassport.model().registerOnActivityResult(this,requestCode,resultCode,data);
+    }
+```
+
 ## Usage
 
 #### Classes
