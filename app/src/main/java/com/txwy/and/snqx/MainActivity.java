@@ -15,7 +15,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import lib.xdsdk.passport.CometPassport;
-import lib.xdsdk.passport.GoogleHelper;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -25,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Button GuestLogin = findViewById(R.id.Button_Guest);
         Button GoogleLogin = findViewById(R.id.Button_Google);
+        Button FacebookLogin = findViewById(R.id.Button_Facebook);
         Button XDGLogin = findViewById(R.id.Button_Xdg);
         Button CopyQuery = findViewById(R.id.Button_CopyQuery);
         Button Logout = findViewById(R.id.Button_Logout);
@@ -40,6 +40,12 @@ public class MainActivity extends AppCompatActivity {
         GoogleLogin.setOnClickListener((v) -> new Thread(() -> passport.signWithGoogle(this)).start());
         passport.setOnGoogleLoginCompleteListener((result -> {
             Toast.makeText(this, "구글 로그인 쿼리 정보 받아오기 성공!", Toast.LENGTH_SHORT).show();
+            Result.setText(result.toString());
+        }));
+
+        FacebookLogin.setOnClickListener((v) -> new Thread(() -> passport.signWithFacebook(this)).start());
+        passport.setOnFacebookLoginCompleteListener((result -> {
+            Toast.makeText(this, "페이스북 로그인 쿼리 정보 받아오기 성공!", Toast.LENGTH_SHORT).show();
             Result.setText(result.toString());
         }));
 
@@ -86,6 +92,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        GoogleHelper.onActivityResult(this,requestCode,resultCode,data);
+        CometPassport.model().registerOnActivityResult(this,requestCode,resultCode,data);
     }
 }

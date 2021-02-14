@@ -7,4 +7,7 @@
     <string name="google_login_way">old</string>
     <string name="google_server_client_id">17685588992-jjf727icdguc8hne9nf953nh6edjnt6t.apps.googleusercontent.com</string>
     <string name="google_storage_bucket">snqx-d9cde.appspot.com</string>
+
+    <string name="facebook_app_id">1889637967990346</string>
+    <string name="fb_login_protocol_scheme">fb1889637967990346</string>
 </resources>

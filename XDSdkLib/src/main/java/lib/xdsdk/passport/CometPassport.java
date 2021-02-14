@@ -3,10 +3,12 @@ package lib.xdsdk.passport;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.facebook.FacebookSdk;
 import com.google.android.gms.common.Scopes;
 
 import org.json.JSONException;
@@ -78,6 +80,11 @@ public class CometPassport {
         return m_obj;
     }
 
+    public void registerOnActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
+        GoogleHelper.onActivityResult(activity,requestCode,resultCode,data);
+        FacebookHelper.model().onActivityResult(requestCode,resultCode,data);
+    }
+
     public void signWithGuest(final Activity activity) {
         int r6 = SPTools.getInt(activity, Constants.UID, 0);
         HashMap<String, Object> r8 = new HashMap<>();
@@ -112,7 +119,12 @@ public class CometPassport {
         }
     }
 
-    public void signWithFacebook(final Activity activity, final String FacebookUid) {
+    public void signWithFacebook(final Activity activity) {
+        FacebookSdk.sdkInitialize(activity);
+        FacebookHelper.model().doLogin(activity);
+    }
+
+    public void signWithFacebookWithUid(final Activity activity, final String FacebookUid) {
         new Thread(() -> {
             try {
                 HashMap<String, Object> r6 = new HashMap<>();
@@ -140,6 +152,38 @@ public class CometPassport {
                         Toast.makeText(activity, "Login post Error", Toast.LENGTH_SHORT).show();
                     }
                 }, r6);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    public void guestbindingwithFacebook(final Activity activity) {
+        new Thread(() -> {
+            try {
+                String r1 = SPTools.getString(activity, Constants.FACEBOOK_ID, "");
+                HashMap<String, Object> r9 = new HashMap<>();
+                r9.put("appid", urlencode("158714"));
+                r9.put("ver",8);
+                r9.put("time", System.currentTimeMillis() / 1000);
+                r9.put("fuid", urlencode("android_kr_snqx"));
+                r9.put("uid", "");
+                r9.put("fid",urlencode(r1));
+                r9.put("device_id", urlencode(getAndroidID(activity)));
+                HttpUrlConnectionHelper.doPost(activity, String.format(Locale.CHINESE, "https://%s/%s/guestbinding", "p.17996api.com", "api2"), new HttpCallbackModelListener<Object>() {
+                    @Override
+                    public void onFinish(Object obj) {
+                        if ((obj instanceof JSONObject)) {
+                            FacebookLoginCompleteListener.onFinish((JSONObject)obj);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Exception exc) {
+                        exc.printStackTrace();
+                        Toast.makeText(activity, "Login post Error", Toast.LENGTH_SHORT).show();
+                    }
+                }, r9);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -301,6 +345,7 @@ public class CometPassport {
 
     public void logout(Activity activity) {
         GoogleHelper.logout(activity);
+        FacebookHelper.model().logout();
         activity.getSharedPreferences(SPTools.FILE_NAME, Context.MODE_PRIVATE).edit().clear().apply();
     }
 

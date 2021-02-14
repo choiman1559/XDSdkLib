@@ -26,6 +26,12 @@
             android:text="Google Login Test" />
 
         <Button
+            android:id="@+id/Button_Facebook"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Facebook Login Test" />
+
+        <Button
             android:id="@+id/Button_Xdg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -11,14 +11,21 @@ public class SPTools {
         SharedPreferences r0 = activity.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE);
         if (r0 != null) {
             SharedPreferences.Editor r1 = r0.edit();
-            r1.putString(str, str2);
-            r1.apply();
+            r1.putString(str, str2).apply();
         }
     }
 
     public static String getString(Context context, String str, String str2) {
         SharedPreferences r0 = context.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE);
         return r0 != null ? r0.getString(str, str2) : "";
+    }
+
+    public static void putInt(Activity activity, String str, int i) {
+        SharedPreferences r0 = activity.getSharedPreferences(FILE_NAME,Context.MODE_PRIVATE);
+        if (r0 != null) {
+            SharedPreferences.Editor r1 = r0.edit();
+            r1.putInt(str, i).apply();
+        }
     }
 
     public static int getInt(Activity activity, String str, int i) {
