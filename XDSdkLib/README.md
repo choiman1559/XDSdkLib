@@ -71,7 +71,7 @@ in package `lib.xdsdk.passport` :
  in class `CometPassport` :
 
  ```
- public void signWithWegames(final Activity activity, final String ID, String Password)
+ public void signWithXdg(final Activity activity, final String ID, String Password)
  ```
  Log in with your XD global account.
  
