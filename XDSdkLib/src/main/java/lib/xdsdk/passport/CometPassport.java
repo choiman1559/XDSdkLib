@@ -1,19 +1,17 @@
 package lib.xdsdk.passport;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.android.gms.common.Scopes;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -25,37 +23,52 @@ import lib.xdsdk.passport.httpUrlConnectionUtil.Key;
 import lib.xdsdk.passport.httpUrlConnectionUtil.callback.HttpCallbackModelListener;
 
 public class CometPassport {
-    public interface OnGuestLoginCompleteListener {
-        void onFinish(JSONObject result);
+    private static OnFacebookLoginCompleteListener FacebookLoginCompleteListener;
+    private static OnGoogleLoginCompleteListener GoogleLoginCompleteListener;
+    private static OnGuestLoginCompleteListener GuestLoginCompleteListener;
+    private static OnWeGamesLoginCompleteListener WeGamesLoginCompleteListener;
+    private static OnXdgLoginCompleteListener XdgLoginCompleteListener;
+    private static CometPassport m_obj;
+
+    public interface OnFacebookLoginCompleteListener {
+        void onFinish(JSONObject jSONObject);
     }
 
-    private static OnGuestLoginCompleteListener GuestLoginCompleteListener;
+    public interface OnGoogleLoginCompleteListener {
+        void onFinish(JSONObject jSONObject);
+    }
+
+    public interface OnGuestLoginCompleteListener {
+        void onFinish(JSONObject jSONObject);
+    }
+
+    public interface OnWeGamesLoginCompleteListener {
+        void onFinish(JSONObject jSONObject);
+    }
+
+    public interface OnXdgLoginCompleteListener {
+        void onFinish(JSONObject jSONObject);
+    }
 
     public void setOnGuestLoginCompleteListener(OnGuestLoginCompleteListener listener) {
         GuestLoginCompleteListener = listener;
     }
 
-    public interface OnGoogleLoginCompleteListener {
-        void onFinish(JSONObject result);
-    }
-
-    private static OnGoogleLoginCompleteListener GoogleLoginCompleteListener;
-
     public void setOnGoogleLoginCompleteListener(OnGoogleLoginCompleteListener listener) {
         GoogleLoginCompleteListener = listener;
     }
-
-    public interface OnXdgLoginCompleteListener {
-        void onFinish(JSONObject result);
-    }
-
-    private static OnXdgLoginCompleteListener XdgLoginCompleteListener;
 
     public void setOnXdgLoginCompleteListener(OnXdgLoginCompleteListener listener) {
         XdgLoginCompleteListener = listener;
     }
 
-    private static CometPassport m_obj;
+    public void setOnWeGamesLoginCompleteListener(OnWeGamesLoginCompleteListener listener) {
+        WeGamesLoginCompleteListener = listener;
+    }
+
+    public void setOnFacebookLoginCompleteListener(OnFacebookLoginCompleteListener listener) {
+        FacebookLoginCompleteListener = listener;
+    }
 
     public static CometPassport model() {
         if (m_obj != null) {
@@ -66,24 +79,19 @@ public class CometPassport {
     }
 
     public void signWithGuest(final Activity activity) {
-        String r0 = "158714";
-        String r1 = "android_kr_snqx";
-        String r2 = Settings.Secure.getString(activity.getContentResolver(), "android_id");
-        String r3 = ""; //FirebaseInstanceId.getInstance().getToken();
-        final long r6 = System.currentTimeMillis() / 1000;
-        int r4 = SPTools.getInt(activity, Constants.UID, 0);
-        HashMap r9 = new HashMap();
-        r9.put("appid", urlencode(r0));
-        r9.put("ver", 8);
-        r9.put("time", r6);
-        r9.put("fuid", urlencode(r1));
-        r9.put("device_id", urlencode(r2));
-        r9.put("uid", r4);
-        r9.put("autologin", "");
-        r9.put("device_token", urlencode(r3));
+        int r6 = SPTools.getInt(activity, Constants.UID, 0);
+        HashMap<String, Object> r8 = new HashMap<>();
+        r8.put("appid", urlencode("158714"));
+        r8.put("ver", 8);
+        r8.put("time", System.currentTimeMillis() / 1000);
+        r8.put("fuid", urlencode("android_kr_snqx"));
+        r8.put("device_id", urlencode(getAndroidID(activity)));
+        r8.put("uid", r6);
+        r8.put("autologin", "");
+        r8.put("device_token", urlencode(""));
 
         try {
-            HttpUrlConnectioHelper.doPostQueue(activity, String.format(Locale.CHINESE, "https://%s/%s/guest", "p.txwy.tw", "api2"), new HttpCallbackModelListener() {
+            HttpUrlConnectioHelper.doPostQueue(activity, String.format(Locale.CHINESE, "https://%s/%s/guest", "p.txwy.tw", "api2"), new HttpCallbackModelListener<Object>() {
 
                 @Override
                 public void onFinish(Object obj) {
@@ -91,49 +99,38 @@ public class CometPassport {
                     if ((obj instanceof JSONObject)) {
                         Log.d("Passport", obj.toString());
                         activity.runOnUiThread(() -> GuestLoginCompleteListener.onFinish((JSONObject) obj));
-                        //CometPassport.m_obj.processSignin(activity, (JSONObject) obj, r6, XDWayLoginActivity.LOGIN_TYPE_GUEST, "");
                     }
                 }
 
                 @Override
-                // com.txwy.passport.xdsdk.httpUrlConnectionUtil.callback.HttpCallbackModelListener
                 public void onError(Exception exc) {
                     Log.e("CometPassport", "signWithGuest Exception e: " + exc.toString());
                 }
-            }, r9, "");
+            }, r8);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void signInWithXdg(final Activity activity, final String str, String str2) {
+    public void signWithFacebook(final Activity activity, final String FacebookUid) {
         new Thread(() -> {
             try {
-                String r13 = "158714";
-                String r14 = "android_kr_snqx";
-                String r0 = Settings.Secure.getString(activity.getContentResolver(), "android_id");
-                final long r3 = System.currentTimeMillis() / 1000;
-                HashMap r6 = new HashMap();
-                r6.put("appid", urlencode(r13));
+                HashMap<String, Object> r6 = new HashMap<>();
+                r6.put("appid", "158714");
                 r6.put("ver", 8);
-                r6.put("time", r3);
-                String s = str;
-                if (str.indexOf("@") == 0) {
-                    s = str.substring(1);
-                }
-                r6.put("username", urlencode(s));
-                r6.put("password", urlencode(str2));
-                r6.put("fuid", urlencode(r14));
-                r6.put("device_id", urlencode(r0));
+                r6.put("time", System.currentTimeMillis() / 1000);
+                r6.put("fbid", urlencode(FacebookUid));
+                r6.put("fuid", urlencode("android_kr_snqx"));
+                r6.put("device_id", urlencode(getAndroidID(activity)));
                 r6.put("binding", 1);
-                r6.put("autologin", urlencode(""));
-                r6.put("device_token", urlencode(""));
-                HttpUrlConnectioHelper.doPostQueue(activity, String.format(Locale.CHINESE, "https://%s/%s/signin", "p.17996api.com", "api2"), new HttpCallbackModelListener<Object>() {
+                r6.put("accesstoken", "");
+                r6.put("fbappid", urlencode("1889637967990346"));
+                r6.put("device_token", "");
+                HttpUrlConnectioHelper.doPostQueue(activity, String.format(Locale.CHINESE, "https://%s/%s/fb", "p.17996api.com", "api2"), new HttpCallbackModelListener<Object>() {
                     @Override
                     public void onFinish(Object obj) {
                         if ((obj instanceof JSONObject)) {
-                            XdgLoginCompleteListener.onFinish((JSONObject) obj);
-                            //CometPassport.m_obj.processSignin(activity, (JSONObject) obj, r3, "txwy", "");
+                            FacebookLoginCompleteListener.onFinish((JSONObject)obj);
                         }
                     }
 
@@ -142,7 +139,45 @@ public class CometPassport {
                         exc.printStackTrace();
                         Toast.makeText(activity, "Login post Error", Toast.LENGTH_SHORT).show();
                     }
-                }, r6, "");
+                }, r6);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    public void signInWithXdg(final Activity activity, final String id, String pw) {
+        new Thread(() -> {
+            try {
+                HashMap<String, Object> r8 = new HashMap<>();
+                r8.put("appid", urlencode("158714"));
+                r8.put("ver", 8);
+                r8.put("time", System.currentTimeMillis() / 1000);
+                String r9 = id;
+                if (id.indexOf("@") == 0) {
+                    r9 = id.substring(1);
+                }
+                r8.put("username", urlencode(r9));
+                r8.put("password", urlencode(pw));
+                r8.put("fuid", urlencode("android_kr_snqx"));
+                r8.put("device_id", urlencode(getAndroidID(activity)));
+                r8.put("binding", 1);
+                r8.put("autologin", urlencode(""));
+                r8.put("device_token", urlencode(""));
+                HttpUrlConnectioHelper.doPostQueue(activity, String.format(Locale.CHINESE, "https://%s/%s/signin", "p.17996api.com", "api2"), new HttpCallbackModelListener<Object>() {
+                    @Override
+                    public void onFinish(Object obj) {
+                        if ((obj instanceof JSONObject)) {
+                            XdgLoginCompleteListener.onFinish((JSONObject) obj);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Exception exc) {
+                        exc.printStackTrace();
+                        Toast.makeText(activity, "Login post Error", Toast.LENGTH_SHORT).show();
+                    }
+                }, r8);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -153,38 +188,28 @@ public class CometPassport {
         GoogleHelper.pickUserAccount(activity);
     }
 
-    protected void signWithGoogle(final Activity activity, final String str) {
+    protected void signWithGoogleWithEmail(final Activity activity, final String email) {
         new Thread(() -> {
-            String r0 = SPTools.getString(activity, Constants.GOOGLE_OPENID, "");
-            String r1 = "158714";
-            String r2 = "android_kr_snqx";
-            String r3 = Settings.Secure.getString(activity.getContentResolver(), "android_id");
-            String r4 = "google";
-            String r5 = "";//FirebaseInstanceId.getInstance().getToken();
-            String r6 = SPTools.getString(activity, Constants.GOOGLE_ID_TOKEN, "");
-            final long r7 = System.currentTimeMillis() / 1000;
-
-            HashMap r9 = new HashMap();
-            r9.put("id", urlencode(r0));
-            r9.put("appid", urlencode(r1));
-            r9.put("ver", 8);
-            r9.put("time", r7);
-            r9.put("email", urlencode(str));
-            r9.put("fuid", urlencode(r2));
-            r9.put("device_id", urlencode(r3));
-            r9.put("binding", 1);
-            r9.put("isguest", urlencode(r4));
-            r9.put("device_token", urlencode(r5));
-            r9.put("idToken", urlencode(r6));
+            String r3 = SPTools.getString(activity, Constants.GOOGLE_OPENID, "");
+            String r9 = SPTools.getString(activity, Constants.GOOGLE_ID_TOKEN, "");
+            HashMap<String, Object> r0 = new HashMap<>();
+            r0.put("id", urlencode(r3));
+            r0.put("appid", urlencode("158714"));
+            r0.put("ver", 8);
+            r0.put("time", System.currentTimeMillis() / 1000);
+            r0.put("email", urlencode(email));
+            r0.put("fuid", urlencode("android_kr_snqx"));
+            r0.put("device_id", urlencode(getAndroidID(activity)));
+            r0.put("binding", 1);
+            r0.put("isguest", urlencode("google"));
+            r0.put("device_token", urlencode(""));
+            r0.put("idToken", urlencode(r9));
             try {
-                HttpUrlConnectioHelper.doPostQueue(activity, String.format(Locale.CHINESE, "http://%s/api2/google?", "p.17996api.com", "api"), new HttpCallbackModelListener<Object>() {
+                HttpUrlConnectioHelper.doPostQueue(activity, String.format(Locale.CHINESE, "http://%s/%s/google?", "p.17996api.com", "api2"), new HttpCallbackModelListener<Object>() {
                     @Override
                     public void onFinish(Object obj) {
                         if ((obj instanceof JSONObject)) {
-                            activity.runOnUiThread(() -> {
-                                GoogleLoginCompleteListener.onFinish((JSONObject) obj);
-                            });
-                            //CometPassport.m_obj.processSignin(activity, (JSONObject) obj, r7, XDWayLoginActivity.LOGIN_TYPE_GOOGLE, str);
+                            activity.runOnUiThread(() -> GoogleLoginCompleteListener.onFinish((JSONObject) obj));
                         }
                     }
 
@@ -193,65 +218,68 @@ public class CometPassport {
                         exc.printStackTrace();
                         Toast.makeText(activity, "Login post Error", Toast.LENGTH_SHORT).show();
                     }
-                }, r9, "");
+                }, r0);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }).start();
     }
 
-    protected void guestbindingwithGoogle(final Activity activity, String str) throws GooglePlayServicesNotAvailableException, IOException, GooglePlayServicesRepairableException {
-        String r0 = "158714";
-        String r1 = SPTools.getString(activity, Constants.GOOGLE_OPENID, "");
-        String r2 = SPTools.getString(activity, Constants.GOOGLE_ID_TOKEN, "");
-        String r3 = "android_kr_snqx";
-        int r4 = SPTools.getInt(activity, Constants.UID, 0);
-        String r9 = Settings.Secure.getString(activity.getContentResolver(), "android_id");
-        HashMap r10 = new HashMap();
-        r10.put("appid", urlencode(r0));
-        r10.put("ver", 8);
-        r10.put("time", System.currentTimeMillis() / 1000);
-        r10.put("openid", urlencode(r1) + "");
-        r10.put("uid", r4);
-        r10.put("fuid", urlencode(r3));
-        r10.put("device_id", urlencode(r9));
-        r10.put("email", urlencode(str));
-        r10.put("idToken", urlencode(r2));
-        HttpUrlConnectioHelper.doPost(activity, String.format(Locale.CHINESE, "https://%s/%s/guestbindgoogle2", "p.17996api.com", "api2"), new HttpCallbackModelListener<Object>() {
-
-            @Override
-            public void onFinish(Object obj) {
-                if ((obj instanceof JSONObject)) {
-                    try {
-                        Toast.makeText(activity, ((JSONObject) obj).getString("msg"), Toast.LENGTH_SHORT).show();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-
-            @Override
-            public void onError(Exception exc) {
-                Log.e("CometPassport", "guestbindingwithGoogle Exception e: " + exc.toString());
-            }
-        }, r10, "");
-    }
-
-    public void signWithWegames(final Activity activity, final String str, String str2) {
+    protected void guestbindingwithGoogle(final Activity activity, String email) {
         new Thread(() -> {
             try {
-                HashMap r2 = new HashMap();
+                String r3 = SPTools.getString(activity, Constants.GOOGLE_OPENID, "");
+                String r4 = SPTools.getString(activity, Constants.GOOGLE_ID_TOKEN, "");
+                int r6 = SPTools.getInt(activity, Constants.UID, 0);
+                HashMap<String, Object> r9 = new HashMap<>();
+                r9.put("appid", urlencode("158714"));
+                r9.put("ver", 8);
+                r9.put("time", System.currentTimeMillis() / 1000);
+                r9.put(Scopes.OPEN_ID, urlencode(r3) + "");
+                r9.put("uid", r6);
+                r9.put("fuid", urlencode("android_kr_snqx"));
+                r9.put("device_id", urlencode(getAndroidID(activity)));
+                r9.put("email", urlencode(email));
+                r9.put("idToken", urlencode(r4));
+                HttpUrlConnectioHelper.doPost(activity, String.format(Locale.CHINESE, "https://%s/%s/guestbindgoogle2", "p.17996api.com", "api2"), new HttpCallbackModelListener<Object>() {
+
+                    @Override
+                    public void onFinish(Object obj) {
+                        if ((obj instanceof JSONObject)) {
+                            try {
+                                Toast.makeText(activity, ((JSONObject) obj).getString("msg"), Toast.LENGTH_SHORT).show();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(Exception exc) {
+                        Log.e("CometPassport", "guestbindingwithGoogle Exception e: " + exc.toString());
+                    }
+                }, r9);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    public void signWithWeGames(final Activity activity, final String id, String pw) {
+        new Thread(() -> {
+            try {
+                HashMap<String, Object> r2 = new HashMap<>();
                 r2.put("wg_game_code", "");
                 r2.put("wg_method", "user.login");
-                r2.put("wg_password", str2);
-                r2.put("wg_time", Long.valueOf(System.currentTimeMillis() / 1000));
-                r2.put("wg_username", str);
+                r2.put("wg_password", pw);
+                r2.put("wg_time", System.currentTimeMillis() / 1000);
+                r2.put("wg_username", id);
                 HttpUrlConnectioHelper.doPost(activity, "https://api.wegames.com.tw/api/", new HttpCallbackModelListener<Object>() {
                     @Override
                     public void onFinish(Object obj) {
                         if ((obj instanceof JSONObject)) {
                             JSONObject r11 = (JSONObject) obj;
-                            activity.runOnUiThread(() -> XdgLoginCompleteListener.onFinish(r11));
+                            activity.runOnUiThread(() -> WeGamesLoginCompleteListener.onFinish(r11));
                         }
                     }
 
@@ -259,11 +287,16 @@ public class CometPassport {
                     public void onError(Exception exc) {
                         Log.d("CometPassport", "signWithWegames Exception :" + exc.toString());
                     }
-                }, r2, HttpUrlConnectioHelper.TYPE_WEGAMES);
+                }, r2);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }).start();
+    }
+
+    @SuppressLint("HardwareIds")
+    private String getAndroidID(Activity activity) {
+        return Settings.Secure.getString(activity.getContentResolver(), "android_id");
     }
 
     public void logout(Activity activity) {
@@ -283,7 +316,6 @@ public class CometPassport {
             return "";
         }
     }
-
 
     public static String urldecode(String str) {
         if (str == null) {

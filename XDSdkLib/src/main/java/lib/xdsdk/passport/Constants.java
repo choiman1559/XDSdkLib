@@ -1,5 +1,6 @@
 package lib.xdsdk.passport;
 
+@SuppressWarnings("unused")
 public class Constants {
     public static String ADVERTISING_ID = "ADVERTISING_ID";
     public static String APPID = "APPID";
@@ -18,7 +19,7 @@ public class Constants {
     public static String FB_NAME = "FB_NAME";
     public static String FIREBASE_MESSAGE_SWITCH = "firebase_push_switch";
     public static String FIRST_USED_TIME = "first_used_time";
-    public static final String FIRST_VERIFY_OBB = "first_verify_obb";
+    public static String FIRST_VERIFY_OBB = "first_verify_obb";
     public static String FUID = "FUID";
     public static String GLINK_CAN_SHOW = "glink_can_show";
     public static String GOOGLE_ID_TOKEN = "GOOGLE_ID_TOKEN";
@@ -57,7 +58,7 @@ public class Constants {
     public static String PUBKEY = "PUBKEY";
     public static String PUSH_CONTENT = "PUSH_CONTENT";
     public static String PUSH_HISTORY = "PUSH_HISTORY";
-    public static final String REQUESTING_INIT = "requesting_init";
+    public static String REQUESTING_INIT = "requesting_init";
     public static String ROLE_ACHIEVEMENT = "ROLE_ACHIEVEMENT";
     public static String ROLE_CREATE = "ROLE_CREATE";
     public static String ROLE_LEVEL = "ROLE_LEVEL";

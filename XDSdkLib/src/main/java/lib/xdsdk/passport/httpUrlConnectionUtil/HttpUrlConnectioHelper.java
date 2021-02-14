@@ -20,7 +20,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -45,25 +44,11 @@ import static lib.xdsdk.passport.CometPassport.urlencode;
 import static lib.xdsdk.passport.httpUrlConnectionUtil.Key.STRING_CHARSET_NAME;
 
 public class HttpUrlConnectioHelper {
-    private static final String TAG = "SDK HttpUrlConnectioHelper";
-    public static String TYPE_WEGAMES = "weagames";
     private static final String httpHelper = "help";
     static ExecutorService threadPool = Executors.newCachedThreadPool();
 
-    public static void doPostQueue(Activity activity, String str, HttpCallbackModelListener httpCallbackModelListener, Map<String, Object> map, String str2) throws GooglePlayServicesNotAvailableException, IOException, GooglePlayServicesRepairableException {
-        if (isNeedQueue(activity)) {
-            JSONObject r2 = new JSONObject();
-            try {
-                r2.put("ret", 32204);
-                r2.put("msg", "서버 연결 실패, 재시도 해주세요");
-                r2.put("httpaction", httpHelper);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            new ResponseCall(activity, httpCallbackModelListener).doScuccess(r2);
-            return;
-        }
-        doPost(activity, str, httpCallbackModelListener, map, str2);
+    public static void doPostQueue(Activity activity, String str, HttpCallbackModelListener<Object> httpCallbackModelListener, Map<String, Object> map) throws GooglePlayServicesNotAvailableException, IOException, GooglePlayServicesRepairableException {
+        doPost(activity, str, httpCallbackModelListener, map);
     }
 
     public static String getSig(String str, String str2) {
@@ -104,7 +89,7 @@ public class HttpUrlConnectioHelper {
         return String.format(Locale.CHINESE, "%s&fbl=%s&os=%s&dev=%s&cpu=%s&men=%s&appver=%s&buildnumber=%s&sys=%s&adid=%s&platform=%s&l=%s&guid=%s", str, urlencode(String.format(Locale.CHINESE, "%d_%d", r1.widthPixels, r1.heightPixels)), urlencode(String.format(Locale.CHINESE, "%s(%s)", Build.VERSION.RELEASE, Build.VERSION.CODENAME)), urlencode(String.format(Locale.CHINESE, "%s", Build.MODEL)), urlencode(String.format(Locale.CHINESE, "%s", Build.CPU_ABI)), 0, urlencode(String.format(Locale.CHINESE, "%s", "2.0700_292")), urlencode(String.format(Locale.CHINESE, "%s", Integer.valueOf("292"))), urlencode("android"), urlencode(AdvertisingIdClient.getAdvertisingIdInfo(activity.getApplicationContext()).getId()), urlencode("txwy"), urldecode(urlencode("kr")), urlencode(SPTools.getString(activity, Constants.CUSTOM_DEVICE_ID, "")));
     }
 
-    public static void doPost(final Activity activity, final String str, final HttpCallbackModelListener httpCallbackModelListener, Map<String, Object> map, String str2) throws GooglePlayServicesNotAvailableException, IOException, GooglePlayServicesRepairableException {
+    public static void doPost(final Activity activity, final String str, final HttpCallbackModelListener<Object> httpCallbackModelListener, Map<String, Object> map) throws GooglePlayServicesNotAvailableException, IOException, GooglePlayServicesRepairableException {
         String str3;
         StringBuilder r0 = new StringBuilder();
         if (map != null) {
@@ -142,7 +127,7 @@ public class HttpUrlConnectioHelper {
                     r01.close();
                     if (httpURLConnection.getResponseCode() == 200) {
                         InputStream r001 = httpURLConnection.getInputStream();
-                        BufferedReader r3 = new BufferedReader(new InputStreamReader(r001, StandardCharsets.UTF_8));
+                        BufferedReader r3 = new BufferedReader(new InputStreamReader(r001, STRING_CHARSET_NAME));
                         StringBuilder r2 = new StringBuilder();
                         while (true) {
                             String r4 = r3.readLine();
@@ -157,11 +142,11 @@ public class HttpUrlConnectioHelper {
                             jSONObject = (JSONObject) new JSONTokener(HttpUrlConnectioHelper.JsonFilter(r2.toString())).nextValue();
                         } catch (JSONException e3) {
                             e3.printStackTrace();
-                            jSONObject = HttpUrlConnectioHelper.getErroJson(activity);
+                            jSONObject = HttpUrlConnectioHelper.getErroJson();
                         }
-                        new ResponseCall(activity, httpCallbackModelListener).doScuccess(jSONObject);
+                        new ResponseCall<>(activity, httpCallbackModelListener).doScuccess(jSONObject);
                     } else {
-                        new ResponseCall(activity, httpCallbackModelListener).doFail(new NetworkErrorException("respons:" + httpURLConnection.getResponseMessage() + " err code:" + httpURLConnection.getResponseCode()));
+                        new ResponseCall<>(activity, httpCallbackModelListener).doFail(new NetworkErrorException("respons:" + httpURLConnection.getResponseMessage() + " err code:" + httpURLConnection.getResponseCode()));
                     }
                     if (httpURLConnection == null) {
                         return;
@@ -176,7 +161,7 @@ public class HttpUrlConnectioHelper {
         });
     }
 
-    public static JSONObject getErroJson(Activity activity) {
+    public static JSONObject getErroJson() {
         JSONObject r0 = new JSONObject();
         try {
             r0.put("ret", 1);
@@ -188,17 +173,7 @@ public class HttpUrlConnectioHelper {
         return r0;
     }
 
-    private static boolean isNeedQueue(Activity activity) {
-        /*if (SPTools.getString(activity, Constants.LOGIN_STATE, "-1").equals("32204")) {
-            if (System.currentTimeMillis() - SPTools.getLong(activity, Constants.INIT_TIME, 0) < Util.MILLSECONDS_OF_MINUTE) {
-                SP.putLong(activity, Constants.INIT_TIME, 0);
-                return true;
-            }
-        }*/
-        return false;
-    }
 
-    /* access modifiers changed from: private */
     public static String JsonFilter(String str) {
         return str.substring(str.indexOf("{")).replace("\r\n", "\n");
     }

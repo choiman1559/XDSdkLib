@@ -20,7 +20,6 @@ import lib.xdsdk.passport.httpUrlConnectionUtil.Key;
 public class CustomDeviceIdHelper {
     private static final String DEVICE_CACHE_DIR = "aray/cache/devices";
     private static final String DEVICE_FILE_NAME = ".DEVICES";
-    private static final String TAG = "CustomDeviceIdHelper";
 
     public static void saveCustomDeviceId(Activity activity) {
         String r0 = getDeviceId(activity);
@@ -51,7 +50,7 @@ public class CustomDeviceIdHelper {
         if (r5 == null) {
             return "";
         }
-        StringBuffer r0 = new StringBuffer();
+        StringBuilder r0 = new StringBuilder();
         try {
             FileInputStream r1 = new FileInputStream(r5);
             InputStreamReader r6 = new InputStreamReader(r1, Key.STRING_CHARSET_NAME);
@@ -107,9 +106,6 @@ public class CustomDeviceIdHelper {
     }
 
     private static boolean lacksPermission(Context context, String str) {
-        if (Build.VERSION.SDK_INT >= 23 && ContextCompat.checkSelfPermission(context, str) == -1) {
-            return true;
-        }
-        return false;
+        return Build.VERSION.SDK_INT >= 23 && ContextCompat.checkSelfPermission(context, str) == -1;
     }
 }
