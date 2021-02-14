@@ -86,6 +86,34 @@ To use this method, you need to call the `GoogleHelper#public static void onActi
 
 --------------------------------------------------
 
+in class `CometPassport` :
+
+ ```
+ public void signWithGoogleWithEmail(final Activity activity, final String email)
+ ```
+ Log in with your Google account using e-mail address.
+ this method doesnt't need override `Activity#onActivityResult(int, int, Intent)`.
+ 
+--------------------------------------------------
+
+ in class `CometPassport` :
+
+ ```
+ public void signWithFacebook(final Activity activity, final String FacebookUid)
+ ```
+ Log in with your Facebook account.
+ 
+ -------------------------------------------------
+ 
+  in class `CometPassport` :
+
+ ```
+ public void signWithWeGames(final Activity activity, final String id, String pw)
+ ```
+ Log in with your WeGame account.
+ 
+ -------------------------------------------------
+
  in class `CometPassport` : 
  ```
  public void logout(Activity activity)
@@ -94,7 +122,7 @@ To use this method, you need to call the `GoogleHelper#public static void onActi
  Log out of all login sessions.
 You may need to clear the app's cache in order to log out completely.
 
---------------------------------------------------
+ -------------------------------------------------
 
  in class `GoogleHelper` : 
  ```
@@ -119,6 +147,24 @@ This is a listener registration method that is called when logging in as a guest
  ```
  
 This is a listener registration method that is called when logging in as a Xdg global account is complete.
+
+-------------------------------------------------
+
+ in class `CometPassport` : 
+ ```
+ public void setOnFacebookLoginCompleteListener(OnFacebookLoginCompleteListener listener)
+ ```
+ 
+This is a listener registration method that is called when logging in as a Facebook account is complete.
+
+-------------------------------------------------
+
+ in class `CometPassport` : 
+ ```
+ public void setOnWeGamesLoginCompleteListener(OnWeGamesLoginCompleteListener listener)
+ ```
+ 
+This is a listener registration method that is called when logging in as a WeGame account is complete.
 
 -------------------------------------------------
 
@@ -163,6 +209,30 @@ This is the interface used for `public void setOnGoogleLoginCompleteListener(OnG
  ```
 
 This is the interface used for `public void setOnXdgLoginCompleteListener(OnXdgLoginCompleteListener listener)`.
+ - `JSONObject result`: Provides the login result query value.
+
+-------------------------------------------------
+
+ in class `CometPassport` : 
+ ```
+  public interface OnFacebookLoginCompleteListener {
+        void onFinish(JSONObject result);
+    }
+ ```
+
+This is the interface used for `public void setOnFacebookLoginCompleteListener(OnFacebookLoginCompleteListener listener)`.
+ - `JSONObject result`: Provides the login result query value.
+
+-------------------------------------------------
+
+ in class `CometPassport` : 
+ ```
+  public interface OnWeGamesLoginCompleteListener {
+        void onFinish(JSONObject result);
+    }
+ ```
+
+This is the interface used for `public void setOnWeGamesLoginCompleteListener(OnWeGamesLoginCompleteListener listener)`.
  - `JSONObject result`: Provides the login result query value.
 
 -------------------------------------------------
