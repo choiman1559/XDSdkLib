@@ -43,13 +43,9 @@ import static lib.xdsdk.passport.CometPassport.urldecode;
 import static lib.xdsdk.passport.CometPassport.urlencode;
 import static lib.xdsdk.passport.httpUrlConnectionUtil.Key.STRING_CHARSET_NAME;
 
-public class HttpUrlConnectioHelper {
+public class HttpUrlConnectionHelper {
     private static final String httpHelper = "help";
     static ExecutorService threadPool = Executors.newCachedThreadPool();
-
-    public static void doPostQueue(Activity activity, String str, HttpCallbackModelListener<Object> httpCallbackModelListener, Map<String, Object> map) throws GooglePlayServicesNotAvailableException, IOException, GooglePlayServicesRepairableException {
-        doPost(activity, str, httpCallbackModelListener, map);
-    }
 
     public static String getSig(String str, String str2) {
         try {
@@ -82,6 +78,7 @@ public class HttpUrlConnectioHelper {
             throw new RuntimeException("Huh, UTF-8 should be supported?", e2);
         }
     }
+
     public static String setPost(Activity activity, String str) throws GooglePlayServicesNotAvailableException, IOException, GooglePlayServicesRepairableException {
         DisplayMetrics r1 = new DisplayMetrics();
         activity.getWindowManager().getDefaultDisplay().getMetrics(r1);
@@ -139,10 +136,10 @@ public class HttpUrlConnectioHelper {
                         r3.close();
                         r01.close();
                         try {
-                            jSONObject = (JSONObject) new JSONTokener(HttpUrlConnectioHelper.JsonFilter(r2.toString())).nextValue();
+                            jSONObject = (JSONObject) new JSONTokener(JsonFilter(r2.toString())).nextValue();
                         } catch (JSONException e3) {
                             e3.printStackTrace();
-                            jSONObject = HttpUrlConnectioHelper.getErroJson();
+                            jSONObject = getErroJson();
                         }
                         new ResponseCall<>(activity, httpCallbackModelListener).doScuccess(jSONObject);
                     } else {

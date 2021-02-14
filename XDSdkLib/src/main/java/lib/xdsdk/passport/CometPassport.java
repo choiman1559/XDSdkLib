@@ -18,7 +18,7 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Locale;
 
-import lib.xdsdk.passport.httpUrlConnectionUtil.HttpUrlConnectioHelper;
+import lib.xdsdk.passport.httpUrlConnectionUtil.HttpUrlConnectionHelper;
 import lib.xdsdk.passport.httpUrlConnectionUtil.Key;
 import lib.xdsdk.passport.httpUrlConnectionUtil.callback.HttpCallbackModelListener;
 
@@ -91,7 +91,7 @@ public class CometPassport {
         r8.put("device_token", urlencode(""));
 
         try {
-            HttpUrlConnectioHelper.doPostQueue(activity, String.format(Locale.CHINESE, "https://%s/%s/guest", "p.txwy.tw", "api2"), new HttpCallbackModelListener<Object>() {
+            HttpUrlConnectionHelper.doPost(activity, String.format(Locale.CHINESE, "https://%s/%s/guest", "p.txwy.tw", "api2"), new HttpCallbackModelListener<Object>() {
 
                 @Override
                 public void onFinish(Object obj) {
@@ -126,7 +126,7 @@ public class CometPassport {
                 r6.put("accesstoken", "");
                 r6.put("fbappid", urlencode("1889637967990346"));
                 r6.put("device_token", "");
-                HttpUrlConnectioHelper.doPostQueue(activity, String.format(Locale.CHINESE, "https://%s/%s/fb", "p.17996api.com", "api2"), new HttpCallbackModelListener<Object>() {
+                HttpUrlConnectionHelper.doPost(activity, String.format(Locale.CHINESE, "https://%s/%s/fb", "p.17996api.com", "api2"), new HttpCallbackModelListener<Object>() {
                     @Override
                     public void onFinish(Object obj) {
                         if ((obj instanceof JSONObject)) {
@@ -164,7 +164,7 @@ public class CometPassport {
                 r8.put("binding", 1);
                 r8.put("autologin", urlencode(""));
                 r8.put("device_token", urlencode(""));
-                HttpUrlConnectioHelper.doPostQueue(activity, String.format(Locale.CHINESE, "https://%s/%s/signin", "p.17996api.com", "api2"), new HttpCallbackModelListener<Object>() {
+                HttpUrlConnectionHelper.doPost(activity, String.format(Locale.CHINESE, "https://%s/%s/signin", "p.17996api.com", "api2"), new HttpCallbackModelListener<Object>() {
                     @Override
                     public void onFinish(Object obj) {
                         if ((obj instanceof JSONObject)) {
@@ -205,7 +205,7 @@ public class CometPassport {
             r0.put("device_token", urlencode(""));
             r0.put("idToken", urlencode(r9));
             try {
-                HttpUrlConnectioHelper.doPostQueue(activity, String.format(Locale.CHINESE, "http://%s/%s/google?", "p.17996api.com", "api2"), new HttpCallbackModelListener<Object>() {
+                HttpUrlConnectionHelper.doPost(activity, String.format(Locale.CHINESE, "http://%s/%s/google?", "p.17996api.com", "api2"), new HttpCallbackModelListener<Object>() {
                     @Override
                     public void onFinish(Object obj) {
                         if ((obj instanceof JSONObject)) {
@@ -241,7 +241,7 @@ public class CometPassport {
                 r9.put("device_id", urlencode(getAndroidID(activity)));
                 r9.put("email", urlencode(email));
                 r9.put("idToken", urlencode(r4));
-                HttpUrlConnectioHelper.doPost(activity, String.format(Locale.CHINESE, "https://%s/%s/guestbindgoogle2", "p.17996api.com", "api2"), new HttpCallbackModelListener<Object>() {
+                HttpUrlConnectionHelper.doPost(activity, String.format(Locale.CHINESE, "https://%s/%s/guestbindgoogle2", "p.17996api.com", "api2"), new HttpCallbackModelListener<Object>() {
 
                     @Override
                     public void onFinish(Object obj) {
@@ -274,7 +274,7 @@ public class CometPassport {
                 r2.put("wg_password", pw);
                 r2.put("wg_time", System.currentTimeMillis() / 1000);
                 r2.put("wg_username", id);
-                HttpUrlConnectioHelper.doPost(activity, "https://api.wegames.com.tw/api/", new HttpCallbackModelListener<Object>() {
+                HttpUrlConnectionHelper.doPost(activity, "https://api.wegames.com.tw/api/", new HttpCallbackModelListener<Object>() {
                     @Override
                     public void onFinish(Object obj) {
                         if ((obj instanceof JSONObject)) {
