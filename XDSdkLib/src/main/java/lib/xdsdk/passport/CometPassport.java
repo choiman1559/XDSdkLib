@@ -120,7 +120,7 @@ public class CometPassport {
     }
 
     public void signWithFacebook(final Activity activity) {
-        FacebookSdk.sdkInitialize(activity);
+        if(!FacebookSdk.isInitialized()) FacebookSdk.sdkInitialize(activity);
         FacebookHelper.model().doLogin(activity);
     }
 
@@ -345,7 +345,7 @@ public class CometPassport {
 
     public void logout(Activity activity) {
         GoogleHelper.logout(activity);
-        FacebookHelper.model().logout();
+        if(FacebookSdk.isInitialized()) FacebookHelper.model().logout();
         activity.getSharedPreferences(SPTools.FILE_NAME, Context.MODE_PRIVATE).edit().clear().apply();
     }
 
